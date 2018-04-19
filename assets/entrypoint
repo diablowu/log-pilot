@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 import os
@@ -40,7 +40,7 @@ def run():
     else:
         tpl_config = "/pilot/fluentd.tpl"
 
-    os.execve('/pilot/pilot', ['/pilot/pilot', '-template', tpl_config, '-base', base, '-log-level', 'debug'],
+    os.execve('/pilot/pilot', ['/pilot/pilot', '-t', tpl_config, '-b', base, '-v', 'debug'],
               os.environ)
 
 
@@ -48,10 +48,10 @@ def config():
     pilot_type = os.environ.get(ENV_PILOT_TYPE)
     if pilot_filebeat == pilot_type:
         print "enable pilot:", pilot_filebeat
-        subprocess.check_call(['/pilot/config.filebeat'])
+        subprocess.check_call(['/pilot/filebeat-config.sh'])
     else:
         print "enable pilot:", pilot_fluentd
-        subprocess.check_call(['/pilot/config.fluentd'])
+        subprocess.check_call(['/pilot/fluentd-config.sh'])
 
 
 if __name__ == '__main__':

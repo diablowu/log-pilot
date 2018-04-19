@@ -3,6 +3,8 @@
 set -e
 
 FILEBEAT_CONFIG=/etc/filebeat/filebeat.yml
+
+
 if [ -f "$FILEBEAT_CONFIG" ]; then
     echo "$FILEBEAT_CONFIG has been existed"
     exit
@@ -39,6 +41,8 @@ filebeat.config:
         path: \${path.config}/prospectors.d/*.yml
         reload.enabled: true
         reload.period: 10s
+
+# output
 EOF
 }
 
@@ -66,7 +70,7 @@ EOF
 }
 
 default() {
-echo "use default output"
+echo "use default console output "
 cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.console:
