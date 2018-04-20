@@ -7,7 +7,13 @@ FILEBEAT_CONFIG=/etc/filebeat/filebeat.yml
 
 if [ -f "$FILEBEAT_CONFIG" ]; then
     echo "$FILEBEAT_CONFIG has been existed"
-    exit
+    if [ $DEBUG ]; then
+        echo "debug"
+        rm -f $FILEBEAT_CONFIG
+    else
+        exit
+    fi
+
 fi
 
 mkdir -p /etc/filebeat/prospectors.d
@@ -131,6 +137,8 @@ assert_not_empty "$KAFKA_BROKERS" "KAFKA_BROKERS required"
 KAFKA_BROKERS=$(echo $KAFKA_BROKERS|awk -F, '{for(i=1;i<=NF;i++){printf "\"%s\",", $i}}')
 KAFKA_BROKERS=${KAFKA_BROKERS%,}
 
+KAFKA_MAX_MESSAGE_BYTES=1000000
+KAFKA_REQUIRE_ACKS=1
 cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.kafka:
@@ -150,6 +158,7 @@ output.kafka:
     ${KAFKA_KEEP_ALIVE:+keep_alive ${KAFKA_KEEP_ALIVE}}
     ${KAFKA_MAX_MESSAGE_BYTES:+max_message_bytes: ${KAFKA_MAX_MESSAGE_BYTES}}
     ${KAFKA_REQUIRE_ACKS:+required_acks: ${KAFKA_REQUIRE_ACKS}}
+    partition.round_robin.reachable_only: false
 EOF
 }
 

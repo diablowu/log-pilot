@@ -24,5 +24,12 @@
   close_removed: true
   clean_removed: true
   close_renamed: false
+  multiline:
+    pattern: ^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}
+    negate: true
+    match: after
+  encoding: utf-8
+  document_type: springboot
+  exclude_files: [".gz$",".zip$"]
 
 {{end}}

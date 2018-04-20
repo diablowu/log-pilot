@@ -27,7 +27,6 @@ func main() {
 
 	dry := app.Flag("dryrun", "Dry run.").Short('d').Default("false").Bool()
 
-
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	log.SetOutput(os.Stdout)

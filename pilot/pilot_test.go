@@ -3,9 +3,12 @@ package pilot
 import (
 	"github.com/docker/docker/api/types"
 	log "github.com/Sirupsen/logrus"
-	check "gopkg.in/check.v1"
+	"gopkg.in/check.v1"
 	"os"
 	"testing"
+	"github.com/docker/docker/client"
+	"context"
+	"github.com/docker/docker/api/types/filters"
 )
 
 func Test(t *testing.T) {
@@ -90,6 +93,32 @@ func (p *PilotSuite) TestRender(c *check.C) {
 	}
 	pilot, err := New(template, "/")
 	c.Assert(err, check.IsNil)
-	_, err = pilot.render("id-1111", Source{}, configs)
+	_, err = pilot.render("id-1111", nil, configs)
 	c.Assert(err, check.IsNil)
+}
+
+func TestDockerEvent(t *testing.T) {
+	client, err := client.NewEnvClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+
+	filter := filters.NewArgs()
+	filter.Add("type", "container")
+
+	options := types.EventsOptions{
+		Filters: filter,
+	}
+
+	msgs, errs := client.Events(ctx, options)
+	t.Log("starting to receive docker event.")
+	for {
+		select {
+		case msg := <-msgs:
+			log.Printf("process event: %v,  %v", msg)
+		case err := <-errs:
+			log.Warnf("error: %v", err)
+		}
+	}
 }
