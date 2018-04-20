@@ -21,6 +21,7 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	"golang.org/x/net/context"
+	"github.com/davecgh/go-spew/spew"
 )
 
 /**
@@ -495,14 +496,16 @@ func (p *Pilot) parseLogConfig(name string, info *LogInfoNode, jsonLogPath strin
 
 	target := info.get("target")
 
+	// 泰康pol平台index名称不能被强制制定
+	// 由logstash生成
 	// add default index or topic
-	if _, ok := tagMap["index"]; !ok {
-		if target != "" {
-			tagMap["index"] = target
-		} else {
-			tagMap["index"] = name
-		}
-	}
+	//if _, ok := tagMap["index"]; !ok {
+	//	if target != "" {
+	//		tagMap["index"] = target
+	//	} else {
+	//		tagMap["index"] = name
+	//	}
+	//}
 
 	if _, ok := tagMap["topic"]; !ok {
 		if target != "" {
@@ -679,6 +682,9 @@ func (p *Pilot) render(containerId string, container map[string]string, configLi
 		"container":   container,
 		"output":      output,
 	}
+
+
+	log.Debugf("context = %s", spew.Sdump(context))
 	if err := p.tpl.Execute(&buf, context); err != nil {
 		return "", err
 	}
