@@ -508,7 +508,7 @@ func (p *Pilot) parseLogConfig(name string, info *LogInfoNode, jsonLogPath strin
 
 	target := info.get("target")
 
-	// 泰康pol平台index名称不能被强制制定
+	// pol平台index名称不能被强制制定
 	// 由logstash生成
 	// add default index or topic
 	//if _, ok := tagMap["index"]; !ok {
