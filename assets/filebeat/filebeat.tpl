@@ -25,7 +25,7 @@
   clean_removed: true
   close_renamed: false
   multiline:
-    pattern: ^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}
+    pattern: {{ if eq .MultlinePattern "" }} {{ . MultlinePattern }} {{else}}^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}{{end}}
     negate: true
     match: after
   encoding: utf-8
