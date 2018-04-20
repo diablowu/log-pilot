@@ -20,4 +20,5 @@ VOLUME /var/lib/filebeat
 
 WORKDIR /pilot/
 ENV PILOT_TYPE=filebeat FILEBEAT_OUTPUT=console CONSOLE_PRETTY=true
-ENTRYPOINT ["/pilot/entrypoint"]
+#ENTRYPOINT ["/pilot/entrypoint"]
+ENTRYPOINT ["/pilot/pilot"]
