@@ -56,14 +56,39 @@ output.kafka:
 `
 
 const TPL_REDIS = `
+output.redis:
+    hosts: ["$REDIS_HOST:$REDIS_PORT"]
+    key: "%{[fields.topic]:filebeat}"
+    ${REDIS_WORKER:+worker: ${REDIS_WORKER}}
+    ${REDIS_PASSWORD:+password: ${REDIS_PASSWORD}}
+    ${REDIS_DATATYPE:+datatype: ${REDIS_DATATYPE}}
+    ${REDIS_LOADBALANCE:+loadbalance: ${REDIS_LOADBALANCE}}
+    ${REDIS_TIMEOUT:+timeout: ${REDIS_TIMEOUT}}
+    ${REDIS_BULK_MAX_SIZE:+bulk_max_size: ${REDIS_BULK_MAX_SIZE}}
 `
 const TPL_ES = `
+output.elasticsearch:
+    hosts: ["$ELASTICSEARCH_HOST:$ELASTICSEARCH_PORT"]
+    index: ${FILEBEAT_INDEX:-filebeat}-%{+yyyy.MM.dd}
+    ${ELASTICSEARCH_SCHEME:+protocol: ${ELASTICSEARCH_SCHEME}}
+    ${ELASTICSEARCH_USER:+username: ${ELASTICSEARCH_USER}}
+    ${ELASTICSEARCH_PASSWORD:+password: ${ELASTICSEARCH_PASSWORD}}
+    ${ELASTICSEARCH_WORKER:+worker: ${ELASTICSEARCH_WORKER}}
+    ${ELASTICSEARCH_PATH:+path: ${ELASTICSEARCH_PATH}}
+    ${ELASTICSEARCH_BULK_MAX_SIZE:+bulk_max_size: ${ELASTICSEARCH_BULK_MAX_SIZE}}
 `
 
 const TPL_LS = `
-
+output.logstash:
+    hosts: ["$LOGSTASH_HOST:$LOGSTASH_PORT"]
+    index: ${FILEBEAT_INDEX:-filebeat}-%{+yyyy.MM.dd}
+    ${LOGSTASH_WORKER:+worker: ${LOGSTASH_WORKER}}
+    ${LOGSTASH_LOADBALANCE:+loadbalance: ${LOGSTASH_LOADBALANCE}}
+    ${LOGSTASH_BULK_MAX_SIZE:+bulk_max_size: ${LOGSTASH_BULK_MAX_SIZE}}
+    ${LOGSTASH_SLOW_START:+slow_start: ${LOGSTASH_SLOW_START}}
 `
 
+// 生成filebeat主配置文件
 func CreateFileBeatCfg() error {
 	os.Mkdir("/etc/filebeat/prospectors.d", 0666)
 

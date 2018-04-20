@@ -34,14 +34,10 @@ func main() {
 	logLevel, _ := log.ParseLevel(*level)
 	log.SetLevel(logLevel)
 
-	// 生成filebeat主配置文件
 	if err := pilot.CreateFileBeatCfg(); err != nil {
 		log.Fatal("can't make filebeat.yml. ", err)
 	}
 
-
-	// mount point 配置
-	// 主要是 umount 一下
 	if err := pilot.ConfigDockerMountPoint(); err != nil {
 		log.Fatal("can't config mount point.", err)
 	}

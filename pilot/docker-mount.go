@@ -9,6 +9,9 @@ import (
 
 const proc_mount_file = "/proc/self/mountinfo"
 
+
+// mount point 配置
+// 主要是 umount 一下
 func ConfigDockerMountPoint() error {
 	for _, mp := range mountPoints() {
 		if err := mp.umount(); err != nil {
