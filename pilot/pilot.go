@@ -48,6 +48,9 @@ const LABEL_POD = "io.kubernetes.pod.name"
 const LABEL_K8S_POD_NAMESPACE = "io.kubernetes.pod.namespace"
 const LABEL_K8S_CONTAINER_NAME = "io.kubernetes.container.name"
 
+const LABEL_RANCHER_STACK = "io.rancher.stack.name"
+const LABEL_RANCHER_STACK_SERVICE = "io.rancher.stack_service.name"
+
 var NODE_NAME = os.Getenv("NODE_NAME")
 
 const ERR_ALREADY_STARTED = "already started"
@@ -98,9 +101,10 @@ func New(tplStr string, baseDir string) (*Pilot, error) {
 		return nil, err
 	}
 
-	piloter, _ := NewFluentdPiloter()
-	if os.Getenv(ENV_PILOT_TYPE) == PILOT_FILEBEAT {
-		piloter, _ = NewFilebeatPiloter(baseDir)
+	piloter, _ := NewFilebeatPiloter(baseDir)
+
+	if os.Getenv(ENV_PILOT_TYPE) == PILOT_FLUENTD {
+		piloter, _ = NewFluentdPiloter()
 	}
 
 	logPrefix := []string{"aliyun"}
@@ -306,7 +310,15 @@ func container(containerJSON *types.ContainerJSON) map[string]string {
 	putIfNotEmpty(c, "k8s_pod_namespace", labels[LABEL_K8S_POD_NAMESPACE])
 	putIfNotEmpty(c, "k8s_container_name", labels[LABEL_K8S_CONTAINER_NAME])
 	putIfNotEmpty(c, "k8s_node_name", NODE_NAME)
-	putIfNotEmpty(c, "docker_container", strings.TrimPrefix(containerJSON.Name, "/"))
+
+	putIfNotEmpty(c, "docker_container_name", strings.TrimPrefix(containerJSON.Name, "/"))
+	putIfNotEmpty(c, "docker_container_created", containerJSON.Created)
+	putIfNotEmpty(c, "docker_container_image", containerJSON.Config.Image)
+	putIfNotEmpty(c, "docker_container_id", containerJSON.ID)
+
+	putIfNotEmpty(c, "rancher_stack", labels[LABEL_RANCHER_STACK])
+	putIfNotEmpty(c, "rancher_stack_service", labels[LABEL_RANCHER_STACK_SERVICE])
+
 	extension(c, containerJSON)
 	return c
 }
@@ -682,7 +694,6 @@ func (p *Pilot) render(containerId string, container map[string]string, configLi
 		"container":   container,
 		"output":      output,
 	}
-
 
 	log.Debugf("context = %s", spew.Sdump(context))
 	if err := p.tpl.Execute(&buf, context); err != nil {

@@ -15,9 +15,8 @@ RUN mkdir /var/log/filebeat /var/lib/filebeat && \
 COPY ./log-pilot /pilot/pilot
 COPY assets/entrypoint assets/filebeat/ /pilot/
 
-
-# VOLUME /var/log/filebeat
-# VOLUME /var/lib/filebeat
+VOLUME /var/log/filebeat
+VOLUME /var/lib/filebeat
 
 WORKDIR /pilot/
 ENV PILOT_TYPE=filebeat FILEBEAT_OUTPUT=console CONSOLE_PRETTY=true
