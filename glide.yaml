@@ -1,0 +1,27 @@
+package: github.com/diablowu/log-pilot
+import:
+- package: github.com/Sirupsen/logrus
+  version: ~1.0.5
+- package: github.com/alecthomas/kingpin
+  version: ~2.2.6
+- package: github.com/davecgh/go-spew
+  version: ~1.1.0
+  subpackages:
+  - spew
+- package: github.com/docker/docker
+  version: ~17.5.0-ce
+  subpackages:
+  - api/types
+  - api/types/events
+  - api/types/filters
+  - api/types/mount
+  - client
+- package: github.com/elastic/go-ucfg
+  version: ~0.5.1
+  subpackages:
+  - yaml
+- package: golang.org/x/net
+- package: golang.org/x/sys
+- package: golang.org/x/crypto
+testImport:
+- package: gopkg.in/check.v1

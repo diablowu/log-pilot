@@ -57,7 +57,7 @@ output.kafka:
 
 const TPL_REDIS = `
 output.redis:
-    hosts: ["$REDIS_HOST:$REDIS_PORT"]
+    hosts: {{ envArray "REDIS_HOST" }}
     key: "%{[fields.topic]:filebeat}"
     ${REDIS_WORKER:+worker: ${REDIS_WORKER}}
     ${REDIS_PASSWORD:+password: ${REDIS_PASSWORD}}
